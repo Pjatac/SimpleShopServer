@@ -16,6 +16,7 @@ import { cardSchema } from './schemas/card';
 import { ProductController } from './controllers/productController';
 import { PurchaseController } from './controllers/purchaseController';
 import { CardController } from './controllers/cardController';
+import * as api from './routes/api';
 
 
 export class ShopServer {
@@ -49,6 +50,7 @@ export class ShopServer {
     }
 
     private async routing() {
+        api.register(this.app);
         this.app.post('/addProduct', await this.productController.onAddProduct());
         this.app.get('/products', await this.productController.onGetProducts());
         this.app.post('/purchase', await this.purchaseController.onPurchase());
