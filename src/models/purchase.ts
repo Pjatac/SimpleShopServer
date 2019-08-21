@@ -1,5 +1,12 @@
 import { Document } from "mongoose";
-import { IPurchase } from "../infra/purchase";
 
-export interface IPurchaseModel extends IPurchase, Document {
+export interface IPurchaseModel extends Document {
+    purchases: [
+        {
+            name: string;
+            qnt: number;
+            price: number;
+            cost: number;
+        }
+    ]
 }

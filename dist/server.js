@@ -139,7 +139,7 @@ var ShopServer = /** @class */ (function () {
         this.db.purchase = connection.model("Purchase", purchase_1.purchaseSchema);
         this.db.priceChange = connection.model("PriceChange", priceChange_1.priceChangeSchema);
         this.db.card = connection.model("Card", card_1.cardSchema);
-        this.timer = global.setInterval(function () { return _this.myTimer(); }, 120000);
+        this.timer = global.setInterval(function () { return _this.myTimer(); }, 2000);
     };
     ShopServer.prototype.sockets = function () {
         this.io = socketIo(this.server);
@@ -289,7 +289,7 @@ var ShopServer = /** @class */ (function () {
                             for (var _i = 0, products_1 = products; _i < products_1.length; _i++) {
                                 var prod = products_1[_i];
                                 var dateNow = new Date().toUTCString();
-                                var change = Math.floor(Math.random() * (15 - 10 + 1)) + 10;
+                                var change = Math.floor(Math.random() * 6) + 10;
                                 var growth = (Math.random() > 0.5);
                                 if (growth) {
                                     prod.currPrice += (Math.round(prod.currPrice * change)) / 100;

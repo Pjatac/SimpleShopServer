@@ -1,5 +1,7 @@
 import { Document } from "mongoose";
-import { IPriceChange } from "../infra/priceChange";
 
-export interface IPriceChangeModel extends IPriceChange, Document {
+export interface IPriceChangeModel extends Document {
+    name: string;
+    price: number;
+    date: Date;
 }

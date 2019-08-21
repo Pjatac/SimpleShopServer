@@ -84,7 +84,8 @@ export class ShopServer {
         this.db.purchase = connection.model<IPurchaseModel>("Purchase", purchaseSchema);
         this.db.priceChange = connection.model<IPriceChangeModel>("PriceChange", priceChangeSchema);
         this.db.card = connection.model<ICardModel>("Card", cardSchema);
-        this.timer = global.setInterval(() => this.myTimer(), 120000);
+        
+        this.timer = global.setInterval(() => this.myTimer(), 2000);
     }
 
     private sockets(): void {
@@ -151,7 +152,7 @@ export class ShopServer {
         await this.db.product.find((err, products) => {
             for (let prod of products) {
                 let dateNow = new Date().toUTCString();
-                let change = Math.floor(Math.random() * (15 - 10 + 1)) + 10;
+                let change = Math.floor(Math.random() * 6) + 10;
                 let growth = (Math.random() > 0.5)
                 if (growth) {
                     prod.currPrice += (Math.round(prod.currPrice * change)) / 100;

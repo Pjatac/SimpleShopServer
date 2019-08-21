@@ -1,5 +1,12 @@
 import { Document } from "mongoose";
-import { ICard } from "../infra/card";
 
-export interface ICardModel extends ICard, Document {
+export interface ICardModel extends Document {
+    card: [
+        {
+            
+            name: string;
+            qnt: number;
+            price: number;
+        }
+    ]
 }
