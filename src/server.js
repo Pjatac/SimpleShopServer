@@ -34,7 +34,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var http_1 = require("http");
 var express = require("express");
 var bodyParser = require("body-parser");
@@ -82,7 +82,7 @@ var ShopServer = /** @class */ (function () {
                         return [4 /*yield*/, this.productController.onGetProducts()];
                     case 2:
                         _e.apply(_d, _f.concat([_0.sent()]));
-                        _h = (_g = this.app).get;
+                        _h = (_g = this.app).post;
                         _j = ['/purchase'];
                         return [4 /*yield*/, this.purchaseController.onPurchase()];
                     case 3:
@@ -131,15 +131,14 @@ var ShopServer = /** @class */ (function () {
         };
         this.app.use(cors(corsOptions));
         mongoose.connect('mongodb://localhost/product', { useNewUrlParser: true })
-            .then(function () { return console.log('Connect to DB sucess'); })
-            .catch(function (err) { return console.log(err); });
+            .then(function () { return console.log('Connect to DB sucess'); })["catch"](function (err) { return console.log(err); });
         var MONGODB_CONNECTION = "mongodb://localhost/product";
         var connection = mongoose.createConnection(MONGODB_CONNECTION, { useNewUrlParser: true });
         this.db.product = connection.model("Product", product_1.productSchema);
         this.db.purchase = connection.model("Purchase", purchase_1.purchaseSchema);
         this.db.priceChange = connection.model("PriceChange", priceChange_1.priceChangeSchema);
         this.db.card = connection.model("Card", card_1.cardSchema);
-        this.timer = global.setInterval(function () { return _this.myTimer(); }, 20000);
+        this.timer = global.setInterval(function () { return _this.myTimer(); }, 2000);
     };
     ShopServer.prototype.sockets = function () {
         this.io = socketIo(this.server);
@@ -328,4 +327,3 @@ var ShopServer = /** @class */ (function () {
     return ShopServer;
 }());
 exports.ShopServer = ShopServer;
-//# sourceMappingURL=server.js.map

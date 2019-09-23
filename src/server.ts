@@ -42,7 +42,6 @@ export class ShopServer {
         this.sockets();
         this.listen();
         this.routing();
-
     }
 
     private createApp(): void {
@@ -53,13 +52,14 @@ export class ShopServer {
         api.register(this.app);
         this.app.post('/addProduct', await this.productController.onAddProduct());
         this.app.get('/products', await this.productController.onGetProducts());
-        this.app.post('/purchase', await this.purchaseController.onPurchase());
+        this.app.get('/purchase', await this.purchaseController.onPurchase());
         this.app.get('/card', await this.cardController.onGetCard());
         this.app.post('/card', await this.cardController.onAddToCard());
         this.app.post('/card/inq', await this.cardController.onInq());
         this.app.post('/card/remove', await this.cardController.onRemove());
         this.app.post('/card/deq', await this.cardController.onDeq());
     }
+
     private createServer(): void {
         this.server = createServer(this.app);
     }
@@ -85,7 +85,7 @@ export class ShopServer {
         this.db.priceChange = connection.model<IPriceChangeModel>("PriceChange", priceChangeSchema);
         this.db.card = connection.model<ICardModel>("Card", cardSchema);
         
-        this.timer = global.setInterval(() => this.myTimer(), 2000);
+        this.timer = global.setInterval(() => this.myTimer(), 20000);
     }
 
     private sockets(): void {
@@ -96,7 +96,6 @@ export class ShopServer {
         this.server.listen(this.port, () => {
             console.log('Running server on port %s', this.port);
         });
-
         this.io.on('connect', async (socket: any) => {
             console.log('Connected client on port %s.', this.port);
             socket.on('getProducts', async () => {
@@ -116,34 +115,39 @@ export class ShopServer {
             });
         });
     }
+
     public async getCard() {
         return await this.db.card.findOne((err, card) => {
             if (err)
                 return (err);
             return JSON.stringify(card.map(el => el.toObject()));
         });
-    };
+    }
+
     public async getProducts() {
         return await this.db.product.find((err, products) => {
             if (err)
                 return (err);
             return JSON.stringify(products.map(el => el.toObject()));
         });
-    };
+    }
+
     public async getPriceChanges() {
         return await this.db.priceChange.find((err, priceChanges) => {
             if (err)
                 return (err);
             return JSON.stringify(priceChanges.map(el => el.toObject()));
         });
-    };
+    }
+
     public async getPurchases() {
         return await this.db.purchase.find((err, purchses) => {
             if (err)
                 return (err);
             return JSON.stringify(purchses.map(el => el.toObject()));
         });
-    };
+    }
+    
     public getApp(): express.Application {
         return this.app;
     }

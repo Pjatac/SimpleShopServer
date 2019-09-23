@@ -40,78 +40,67 @@ var PurchaseController = /** @class */ (function () {
         this.server = server;
     }
     PurchaseController.prototype.onPurchase = function () {
-        var server = this.server;
-        return function (req, res) {
-            return __awaiter(this, void 0, void 0, function () {
-                var products, key, _i, products_1, prod, product, _loop_1, _a, products_2, prod, purchase, _b, products_3, prod, _c, _d, _e, _f, _g, _h;
-                return __generator(this, function (_j) {
-                    switch (_j.label) {
-                        case 0:
-                            products = new Array();
-                            for (key in req.body) {
-                                if (req.body.hasOwnProperty(key)) {
-                                    products.push(req.body[key]);
+        return __awaiter(this, void 0, void 0, function () {
+            var server;
+            return __generator(this, function (_a) {
+                server = this.server;
+                return [2 /*return*/, function (req, res) {
+                        return __awaiter(this, void 0, void 0, function () {
+                            var card, purchase, _i, _a, prod, _b, _c, _d, _e, _f, _g;
+                            return __generator(this, function (_h) {
+                                switch (_h.label) {
+                                    case 0: return [4 /*yield*/, server.db.card.findOne()];
+                                    case 1:
+                                        card = _h.sent();
+                                        purchase = new server.db.purchase();
+                                        _i = 0, _a = card.card;
+                                        _h.label = 2;
+                                    case 2:
+                                        if (!(_i < _a.length)) return [3 /*break*/, 5];
+                                        prod = _a[_i];
+                                        purchase.purchases.push({ name: prod.name, qnt: prod.qnt, price: prod.price, cost: prod.price * prod.qnt });
+                                        return [4 /*yield*/, server.db.product.findOne({
+                                                name: prod.name
+                                            }, function (err, toBuy) {
+                                                return __awaiter(this, void 0, void 0, function () {
+                                                    return __generator(this, function (_a) {
+                                                        if (err)
+                                                            throw err;
+                                                        if (toBuy.qnt === 0) {
+                                                            toBuy.remove();
+                                                        }
+                                                        return [2 /*return*/];
+                                                    });
+                                                });
+                                            })];
+                                    case 3:
+                                        _h.sent();
+                                        _h.label = 4;
+                                    case 4:
+                                        _i++;
+                                        return [3 /*break*/, 2];
+                                    case 5:
+                                        purchase.save();
+                                        return [4 /*yield*/, server.db.card.collection.drop()];
+                                    case 6:
+                                        _h.sent();
+                                        _c = (_b = server.io).emit;
+                                        _d = ['getProducts'];
+                                        return [4 /*yield*/, server.getProducts()];
+                                    case 7:
+                                        _c.apply(_b, _d.concat([_h.sent()]));
+                                        _f = (_e = server.io).emit;
+                                        _g = ['getPurchases'];
+                                        return [4 /*yield*/, server.getPurchases()];
+                                    case 8:
+                                        _f.apply(_e, _g.concat([_h.sent()]));
+                                        return [2 /*return*/, res.json("Thank you for using our shop!")];
                                 }
-                            }
-                            _i = 0, products_1 = products;
-                            _j.label = 1;
-                        case 1:
-                            if (!(_i < products_1.length)) return [3 /*break*/, 4];
-                            prod = products_1[_i];
-                            return [4 /*yield*/, server.db.product.findById(prod._id)];
-                        case 2:
-                            product = _j.sent();
-                            if (product && prod.qnt > product.qnt)
-                                return [2 /*return*/, res.send("Sorry, insufficient stock quantity for " + prod.name)];
-                            _j.label = 3;
-                        case 3:
-                            _i++;
-                            return [3 /*break*/, 1];
-                        case 4:
-                            _loop_1 = function (prod) {
-                                server.db.product.findById(prod._id, function (err, product) {
-                                    if (err)
-                                        return res.send(err);
-                                    if (product && prod.qnt < product.qnt) {
-                                        product.qnt -= prod.qnt;
-                                        product.save();
-                                    }
-                                    else {
-                                        server.db.product.findOneAndDelete(product.id, function (err) {
-                                            if (err)
-                                                console.log(err);
-                                        });
-                                    }
-                                });
-                            };
-                            for (_a = 0, products_2 = products; _a < products_2.length; _a++) {
-                                prod = products_2[_a];
-                                _loop_1(prod);
-                            }
-                            purchase = new server.db.purchase();
-                            for (_b = 0, products_3 = products; _b < products_3.length; _b++) {
-                                prod = products_3[_b];
-                                purchase.purchases.push({ name: prod.name, qnt: prod.qnt, price: prod.currPrice, cost: prod.currPrice * prod.qnt });
-                            }
-                            purchase.save();
-                            return [4 /*yield*/, server.db.card.collection.drop()];
-                        case 5:
-                            _j.sent();
-                            _d = (_c = server.io).emit;
-                            _e = ['getProducts'];
-                            return [4 /*yield*/, server.getProducts()];
-                        case 6:
-                            _d.apply(_c, _e.concat([_j.sent()]));
-                            _g = (_f = server.io).emit;
-                            _h = ['getPurchases'];
-                            return [4 /*yield*/, server.getPurchases()];
-                        case 7:
-                            _g.apply(_f, _h.concat([_j.sent()]));
-                            return [2 /*return*/, res.send("ok")];
-                    }
-                });
+                            });
+                        });
+                    }];
             });
-        };
+        });
     };
     return PurchaseController;
 }());

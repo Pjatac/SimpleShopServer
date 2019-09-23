@@ -1,11 +1,13 @@
 import { ShopServer } from "server";
 
 export class ProductController {
+
     server: ShopServer;
 
     constructor(server: ShopServer) {
         this.server = server;
     }
+
     public onGetProducts() {
         const server = this.server;
         return async function (req, res) {
@@ -13,6 +15,7 @@ export class ProductController {
             return res.json(products);
         }
     }
+    
     public onAddProduct() {
         const server = this.server;
         return async function (req, res) {

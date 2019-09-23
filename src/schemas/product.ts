@@ -10,13 +10,13 @@ export var productSchema: Schema = new Schema({
     qnt: {
         type: Number,
         required: true,
-        min: 1,
+        min: 0,
         max: 100
     },
     currPrice: {
         type: Number,
         required: true,
-        min: 0.1
+        min: 0.09
     },
     priceChange: {
         type: Number

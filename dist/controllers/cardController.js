@@ -59,7 +59,7 @@ var CardController = /** @class */ (function () {
         var server = this.server;
         return function (req, res) {
             return __awaiter(this, void 0, void 0, function () {
-                var card, already, _i, _a, prod, newCard;
+                var card, already, _loop_1, _i, _a, prod, newCard;
                 return __generator(this, function (_b) {
                     switch (_b.label) {
                         case 0: return [4 /*yield*/, server.db.card.findOne()];
@@ -68,22 +68,90 @@ var CardController = /** @class */ (function () {
                             if (card === null)
                                 card = new server.db.card();
                             already = false;
-                            for (_i = 0, _a = card.card; _i < _a.length; _i++) {
-                                prod = _a[_i];
-                                if (prod.name === req.body.name) {
-                                    prod.qnt += 1;
-                                    already = true;
-                                }
-                            }
-                            if (!!already) return [3 /*break*/, 3];
-                            return [4 /*yield*/, card.card.push({ name: req.body.name, qnt: 1, price: req.body.currPrice })];
+                            _loop_1 = function (prod) {
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            if (!(prod.name === req.body.name)) return [3 /*break*/, 2];
+                                            return [4 /*yield*/, server.db.product.findOne({
+                                                    name: req.body.name
+                                                }, function (err, onStock) {
+                                                    return __awaiter(this, void 0, void 0, function () {
+                                                        var _a, _b, _c;
+                                                        return __generator(this, function (_d) {
+                                                            switch (_d.label) {
+                                                                case 0:
+                                                                    if (err)
+                                                                        throw err;
+                                                                    if (!(onStock.qnt > 0)) return [3 /*break*/, 2];
+                                                                    onStock.qnt -= 1;
+                                                                    onStock.save();
+                                                                    prod.qnt += 1;
+                                                                    _b = (_a = server.io).emit;
+                                                                    _c = ['getProducts'];
+                                                                    return [4 /*yield*/, server.getProducts()];
+                                                                case 1:
+                                                                    _b.apply(_a, _c.concat([_d.sent()]));
+                                                                    _d.label = 2;
+                                                                case 2: return [2 /*return*/];
+                                                            }
+                                                        });
+                                                    });
+                                                })];
+                                        case 1:
+                                            _a.sent();
+                                            already = true;
+                                            _a.label = 2;
+                                        case 2: return [2 /*return*/];
+                                    }
+                                });
+                            };
+                            _i = 0, _a = card.card;
+                            _b.label = 2;
                         case 2:
-                            _b.sent();
-                            _b.label = 3;
+                            if (!(_i < _a.length)) return [3 /*break*/, 5];
+                            prod = _a[_i];
+                            return [5 /*yield**/, _loop_1(prod)];
                         case 3:
+                            _b.sent();
+                            _b.label = 4;
+                        case 4:
+                            _i++;
+                            return [3 /*break*/, 2];
+                        case 5:
+                            if (!!already) return [3 /*break*/, 8];
+                            return [4 /*yield*/, server.db.product.findOne({
+                                    name: req.body.name
+                                }, function (err, onStock) {
+                                    return __awaiter(this, void 0, void 0, function () {
+                                        var _a, _b, _c;
+                                        return __generator(this, function (_d) {
+                                            switch (_d.label) {
+                                                case 0:
+                                                    if (err)
+                                                        throw err;
+                                                    onStock.qnt -= 1;
+                                                    onStock.save();
+                                                    _b = (_a = server.io).emit;
+                                                    _c = ['getProducts'];
+                                                    return [4 /*yield*/, server.getProducts()];
+                                                case 1:
+                                                    _b.apply(_a, _c.concat([_d.sent()]));
+                                                    return [2 /*return*/];
+                                            }
+                                        });
+                                    });
+                                })];
+                        case 6:
+                            _b.sent();
+                            return [4 /*yield*/, card.card.push({ name: req.body.name, qnt: 1, price: req.body.currPrice })];
+                        case 7:
+                            _b.sent();
+                            _b.label = 8;
+                        case 8:
                             card.save();
                             return [4 /*yield*/, server.db.card.findOne()];
-                        case 4:
+                        case 9:
                             newCard = _b.sent();
                             return [2 /*return*/, res.json(newCard)];
                     }
@@ -95,18 +163,62 @@ var CardController = /** @class */ (function () {
         var server = this.server;
         return function (req, res) {
             return __awaiter(this, void 0, void 0, function () {
-                var card, _i, _a, prod;
+                var card, _loop_2, _i, _a, prod;
                 return __generator(this, function (_b) {
                     switch (_b.label) {
                         case 0: return [4 /*yield*/, server.db.card.findOne()];
                         case 1:
                             card = _b.sent();
-                            for (_i = 0, _a = card.card; _i < _a.length; _i++) {
-                                prod = _a[_i];
-                                if (prod.name === req.body.name) {
-                                    prod.qnt += 1;
-                                }
-                            }
+                            _loop_2 = function (prod) {
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            if (!(prod.name === req.body.name)) return [3 /*break*/, 2];
+                                            return [4 /*yield*/, server.db.product.findOne({
+                                                    name: req.body.name
+                                                }, function (err, onStock) {
+                                                    return __awaiter(this, void 0, void 0, function () {
+                                                        var _a, _b, _c;
+                                                        return __generator(this, function (_d) {
+                                                            switch (_d.label) {
+                                                                case 0:
+                                                                    if (err)
+                                                                        throw err;
+                                                                    if (!(onStock.qnt > 0)) return [3 /*break*/, 2];
+                                                                    onStock.qnt -= 1;
+                                                                    onStock.save();
+                                                                    prod.qnt += 1;
+                                                                    _b = (_a = server.io).emit;
+                                                                    _c = ['getProducts'];
+                                                                    return [4 /*yield*/, server.getProducts()];
+                                                                case 1:
+                                                                    _b.apply(_a, _c.concat([_d.sent()]));
+                                                                    _d.label = 2;
+                                                                case 2: return [2 /*return*/];
+                                                            }
+                                                        });
+                                                    });
+                                                })];
+                                        case 1:
+                                            _a.sent();
+                                            _a.label = 2;
+                                        case 2: return [2 /*return*/];
+                                    }
+                                });
+                            };
+                            _i = 0, _a = card.card;
+                            _b.label = 2;
+                        case 2:
+                            if (!(_i < _a.length)) return [3 /*break*/, 5];
+                            prod = _a[_i];
+                            return [5 /*yield**/, _loop_2(prod)];
+                        case 3:
+                            _b.sent();
+                            _b.label = 4;
+                        case 4:
+                            _i++;
+                            return [3 /*break*/, 2];
+                        case 5:
                             card.save();
                             return [2 /*return*/, res.json(card)];
                     }
@@ -118,18 +230,62 @@ var CardController = /** @class */ (function () {
         var server = this.server;
         return function (req, res) {
             return __awaiter(this, void 0, void 0, function () {
-                var card, _i, _a, prod;
+                var card, _loop_3, _i, _a, prod;
                 return __generator(this, function (_b) {
                     switch (_b.label) {
                         case 0: return [4 /*yield*/, server.db.card.findOne()];
                         case 1:
                             card = _b.sent();
-                            for (_i = 0, _a = card.card; _i < _a.length; _i++) {
-                                prod = _a[_i];
-                                if (prod.name === req.body.name && prod.qnt > 1) {
-                                    prod.qnt -= 1;
-                                }
-                            }
+                            _loop_3 = function (prod) {
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            if (!(prod.name === req.body.name && prod.qnt > 1)) return [3 /*break*/, 2];
+                                            return [4 /*yield*/, server.db.product.findOne({
+                                                    name: req.body.name
+                                                }, function (err, onStock) {
+                                                    return __awaiter(this, void 0, void 0, function () {
+                                                        var _a, _b, _c;
+                                                        return __generator(this, function (_d) {
+                                                            switch (_d.label) {
+                                                                case 0:
+                                                                    if (err)
+                                                                        throw err;
+                                                                    if (!(prod.qnt > 1)) return [3 /*break*/, 2];
+                                                                    onStock.qnt += 1;
+                                                                    onStock.save();
+                                                                    prod.qnt -= 1;
+                                                                    _b = (_a = server.io).emit;
+                                                                    _c = ['getProducts'];
+                                                                    return [4 /*yield*/, server.getProducts()];
+                                                                case 1:
+                                                                    _b.apply(_a, _c.concat([_d.sent()]));
+                                                                    _d.label = 2;
+                                                                case 2: return [2 /*return*/];
+                                                            }
+                                                        });
+                                                    });
+                                                })];
+                                        case 1:
+                                            _a.sent();
+                                            _a.label = 2;
+                                        case 2: return [2 /*return*/];
+                                    }
+                                });
+                            };
+                            _i = 0, _a = card.card;
+                            _b.label = 2;
+                        case 2:
+                            if (!(_i < _a.length)) return [3 /*break*/, 5];
+                            prod = _a[_i];
+                            return [5 /*yield**/, _loop_3(prod)];
+                        case 3:
+                            _b.sent();
+                            _b.label = 4;
+                        case 4:
+                            _i++;
+                            return [3 /*break*/, 2];
+                        case 5:
                             card.save();
                             return [2 /*return*/, res.json(card)];
                     }
@@ -147,11 +303,41 @@ var CardController = /** @class */ (function () {
                         case 0: return [4 /*yield*/, server.db.card.findOne()];
                         case 1:
                             card = _a.sent();
-                            for (i = 0; i < card.card.length; i++) {
-                                if (card.card[i].name === req.body.name) {
-                                    card.card.splice(i, 1);
-                                }
-                            }
+                            i = 0;
+                            _a.label = 2;
+                        case 2:
+                            if (!(i < card.card.length)) return [3 /*break*/, 5];
+                            if (!(card.card[i].name === req.body.name)) return [3 /*break*/, 4];
+                            card.card.splice(i, 1);
+                            return [4 /*yield*/, server.db.product.findOne({
+                                    name: req.body.name
+                                }, function (err, toReturn) {
+                                    return __awaiter(this, void 0, void 0, function () {
+                                        var _a, _b, _c;
+                                        return __generator(this, function (_d) {
+                                            switch (_d.label) {
+                                                case 0:
+                                                    if (err)
+                                                        throw err;
+                                                    toReturn.qnt += req.body.qnt;
+                                                    toReturn.save();
+                                                    _b = (_a = server.io).emit;
+                                                    _c = ['getProducts'];
+                                                    return [4 /*yield*/, server.getProducts()];
+                                                case 1:
+                                                    _b.apply(_a, _c.concat([_d.sent()]));
+                                                    return [2 /*return*/];
+                                            }
+                                        });
+                                    });
+                                })];
+                        case 3:
+                            _a.sent();
+                            _a.label = 4;
+                        case 4:
+                            i++;
+                            return [3 /*break*/, 2];
+                        case 5:
                             card.save();
                             return [2 /*return*/, res.json(card)];
                     }
