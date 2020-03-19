@@ -18,7 +18,6 @@ import { PurchaseController } from './controllers/purchaseController';
 import { CardController } from './controllers/cardController';
 import * as api from './routes/api';
 
-
 export class ShopServer {
     public static readonly PORT: number = 8080;
     private app: express.Application;
@@ -73,11 +72,13 @@ export class ShopServer {
             optionsSuccessStatus: 200
         }
         this.app.use(cors(corsOptions));
-        mongoose.connect('mongodb://localhost/product', { useNewUrlParser: true })
-            .then(() => console.log('Connect to DB sucess'))
-            .catch((err) => console.log(err));
 
         const MONGODB_CONNECTION: string = "mongodb://localhost/product";
+        //const MONGODB_CONNECTION = "mongodb://dbg-user-db:OH4OScBqA3SZhpG4nyZ802pQTiLdeuNkyvn0EmmqhyMskpCwnZizkf6IuoxU6uGW4cQ8fvJAykA8Kp07zD5FAw==@dbg-user-db.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@dbg-user-db@"
+        mongoose.connect(MONGODB_CONNECTION, { useNewUrlParser: true })
+            .then(() => console.log('Connect to DB sucess'))
+            .catch((err) => console.log(err));
+        
         let connection: mongoose.Connection = mongoose.createConnection(MONGODB_CONNECTION, { useNewUrlParser: true });
 
         this.db.product = connection.model<IProductModel>("Product", productSchema);
